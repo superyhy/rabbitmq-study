@@ -1,0 +1,11 @@
+server:
+  port: 9090
+
+spring:
+  rabbitmq:
+    port: 5672
+    host: 127.0.0.1
+    username: guest
+    password: guest
+    publisher-confirms: true
+    virtual-host: /
