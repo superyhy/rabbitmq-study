@@ -7,7 +7,7 @@ public class RabbitMqConstants {
 
     //交换机
     public static final String EXCHANGE_A = "my-mq-direct_exchange";
-    public static final String EXCHANGE_B = "my-mq-exchange_B";
+    public static final String EXCHANGE_B = "my-mq-fanout_exchange";
     public static final String EXCHANGE_C = "my-mq-exchange_C";
 
     //队列

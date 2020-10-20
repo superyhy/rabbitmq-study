@@ -8,7 +8,6 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import java.util.UUID;
 
 @Service
@@ -35,8 +34,23 @@ public class QueueMessageServiceImpl implements QueueMessageService {
         log.info("开始发送消息：{}", message.toString());
         //发送消息到消息队列
         rabbitTemplate.convertAndSend(exchange, queueRoutingKey, message, correlationId);
+
+
         log.info("发送定制的回调ID:{}", callBackId);
 
+    }
+
+    @Override
+    public void sendToFanoutExchange(Object message, String exchange) {
+        //构建回调id为uuid
+        String callBackId = UUID.randomUUID().toString();
+        CorrelationData correlationId = new CorrelationData(callBackId);
+        log.info("开始发送消息：{}", message.toString());
+        //发送消息到消息队列
+        rabbitTemplate.convertAndSend(exchange, "", message, correlationId);
+
+
+        log.info("发送定制的回调ID:{}", callBackId);
     }
 
     /**

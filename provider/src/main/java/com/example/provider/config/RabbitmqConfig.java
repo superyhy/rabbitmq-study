@@ -2,10 +2,7 @@ package com.example.provider.config;
 
 
 import com.example.provider.constants.RabbitMqConstants;
-import org.springframework.amqp.core.Binding;
-import org.springframework.amqp.core.BindingBuilder;
-import org.springframework.amqp.core.DirectExchange;
-import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -108,5 +105,40 @@ public class RabbitmqConfig {
     public Binding bindingAFail() {
         return BindingBuilder.bind(queueAFail()).to(testDirectExchange()).with(RabbitMqConstants.ROUTINGKEY_A_FAIL);
     }
+
+    /**
+     * Fanout Exchange广播式交换机使用
+     *
+     * @return
+     */
+    @Bean
+    public FanoutExchange testFanoutExchange() {
+        return new FanoutExchange(RabbitMqConstants.EXCHANGE_B);
+    }
+
+
+    @Bean
+    public Queue queueB() {
+        //队列持久
+        return new Queue(RabbitMqConstants.QUEUE_B, true);
+    }
+
+    @Bean
+    public Queue queueC() {
+        //队列持久
+        return new Queue(RabbitMqConstants.QUEUE_C, true);
+    }
+
+
+    @Bean
+    public Binding bindFanoutExchangeB() {
+        return BindingBuilder.bind(queueB()).to(testFanoutExchange());
+    }
+
+    @Bean
+    public Binding bindFanoutExchangeC() {
+        return BindingBuilder.bind(queueC()).to(testFanoutExchange());
+    }
+
 
 }
