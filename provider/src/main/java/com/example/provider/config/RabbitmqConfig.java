@@ -1,6 +1,7 @@
 package com.example.provider.config;
 
 
+import com.example.provider.constants.RabbitMqConstants;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.DirectExchange;
@@ -33,22 +34,6 @@ public class RabbitmqConfig {
     @Value("${spring.rabbitmq.virtual-host}")
     private String virtualHost;
 
-
-
-    //交换机
-    public static final String EXCHANGE_A = "my-mq-direct_exchange";
-    public static final String EXCHANGE_B = "my-mq-exchange_B";
-    public static final String EXCHANGE_C = "my-mq-exchange_C";
-
-    //队列
-    public static final String QUEUE_A = "QUEUE_A";
-    public static final String QUEUE_A_FAIL = "QUEUE_A_FAIL";
-    public static final String QUEUE_B = "QUEUE_B";
-
-    //路由
-    public static final String ROUTINGKEY_A = "spring-boot-routingKey_A";
-    public static final String ROUTINGKEY_A_FAIL = "spring-boot-routingKey_A_FAIL";
-    public static final String ROUTINGKEY_B = "spring-boot-routingKey_B";
 
     //创建一个Rabbitmq的连接容器
     @Bean
@@ -90,7 +75,7 @@ public class RabbitmqConfig {
      */
     @Bean
     public DirectExchange testDirectExchange() {
-        return new DirectExchange(EXCHANGE_A);
+        return new DirectExchange(RabbitMqConstants.EXCHANGE_A);
     }
 
     /**
@@ -105,23 +90,23 @@ public class RabbitmqConfig {
      */
     @Bean
     public Queue queueA() {
-        return new Queue(QUEUE_A, true); //队列持久
+        return new Queue(RabbitMqConstants.QUEUE_A, true); //队列持久
     }
 
     @Bean
     public Queue queueAFail() {
-        return new Queue(QUEUE_A_FAIL, true);//队列持久
+        return new Queue(RabbitMqConstants.QUEUE_A_FAIL, true);//队列持久
     }
 
     //将队列和交换机绑定, 并设置用于匹配键：spring-boot-routingKey_A
     @Bean
     public Binding binding() {
-        return BindingBuilder.bind(queueA()).to(testDirectExchange()).with(ROUTINGKEY_A);
+        return BindingBuilder.bind(queueA()).to(testDirectExchange()).with(RabbitMqConstants.ROUTINGKEY_A);
     }
 
     @Bean
     public Binding bindingAFail() {
-        return BindingBuilder.bind(queueAFail()).to(testDirectExchange()).with(RabbitmqConfig.ROUTINGKEY_A_FAIL);
+        return BindingBuilder.bind(queueAFail()).to(testDirectExchange()).with(RabbitMqConstants.ROUTINGKEY_A_FAIL);
     }
 
 }

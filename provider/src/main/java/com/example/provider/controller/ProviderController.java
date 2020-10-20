@@ -1,7 +1,7 @@
 package com.example.provider.controller;
 
 
-import com.example.provider.config.RabbitmqConfig;
+import com.example.provider.constants.RabbitMqConstants;
 import com.example.provider.entity.Message;
 import com.example.provider.service.QueueMessageService;
 import org.slf4j.Logger;
@@ -11,9 +11,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/provider")
@@ -41,7 +41,7 @@ public class ProviderController {
         messageList.add(testMessage3);
 
         try{
-            queueMessageService.send(messageList, RabbitmqConfig.EXCHANGE_A, RabbitmqConfig.ROUTINGKEY_A);
+            queueMessageService.send(messageList, RabbitMqConstants.EXCHANGE_A, RabbitMqConstants.ROUTINGKEY_A);
         } catch (Exception e) {
             log.error("消息发送失败：",e);
         }
