@@ -2,7 +2,7 @@ package com.example.provider.service;
 
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 
-public interface QueueMessageService extends RabbitTemplate.ConfirmCallback {
+public interface QueueMessageService extends RabbitTemplate.ConfirmCallback,RabbitTemplate.ReturnCallback {
 
     /**
      * Direct Exchange（直连交换机）

@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: 8085
 
 spring:
   rabbitmq:
@@ -9,3 +9,6 @@ spring:
     password: guest
     publisher-confirms: true
     virtual-host: /
+    listener:
+      simple:
+        acknowledge-mode: manual #采用手动应答

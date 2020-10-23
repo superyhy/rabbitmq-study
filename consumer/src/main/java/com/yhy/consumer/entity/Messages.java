@@ -2,7 +2,7 @@ package com.yhy.consumer.entity;
 
 import java.io.Serializable;
 
-public class Message implements Serializable {
+public class Messages implements Serializable {
     private String id;
     private String name;
 
