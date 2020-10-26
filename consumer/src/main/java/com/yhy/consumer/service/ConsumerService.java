@@ -42,7 +42,7 @@ public class ConsumerService {
 
     @RabbitListener(queues = RabbitMqConstants.QUEUE_A)
     @RabbitHandler
-    public void consumer2(@Payload  String message, Channel channel, @Headers Map<String,Object> headers) throws IOException {
+    public void consumer2(@Payload String message, Channel channel, @Headers Map<String, Object> headers) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             List<Messages> messageList = objectMapper.readValue(message, new TypeReference<List<Messages>>() {
@@ -54,13 +54,26 @@ public class ConsumerService {
             channel.basicAck((Long) headers.get(DELIVERY_TAG), false);
         } catch (Exception e) {
 
-            System.out.println("消费失败,消息重新入队");
+            System.out.println("消息即将再次返回队列处理！");
             // requeue为是否重新回到队列，true重新入队
             channel.basicNack((Long) headers.get(DELIVERY_TAG), false, true);
-            }
-
+            e.printStackTrace();
         }
 
 
+    }
+
+    /**
+     * 死信队列消费者
+     * @param message
+     * @param channel
+     * @throws Exception
+     */
+    @RabbitListener(queues = RabbitMqConstants.QUEUE_A_DEAD)
+    @RabbitHandler
+    public void deadConsumerA(String message, Channel channel) throws Exception {
+
+        log.info("队列A的死信信息：" + message);
+    }
 }
 

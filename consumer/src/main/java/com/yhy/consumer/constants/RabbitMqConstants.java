@@ -14,6 +14,7 @@ public class RabbitMqConstants {
     public static final String QUEUE_A = "QUEUE_A";
     public static final String QUEUE_A_FAIL = "QUEUE_A_FAIL";
     public static final String QUEUE_B = "QUEUE_B";
+    public static final String QUEUE_A_DEAD = "QUEUE_DEAD";
 
     //路由
     public static final String ROUTINGKEY_A = "spring-boot-routingKey_A";

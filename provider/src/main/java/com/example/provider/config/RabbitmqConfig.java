@@ -14,6 +14,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Configuration
 public class RabbitmqConfig {
     @Value("${spring.rabbitmq.host}")
@@ -62,6 +65,15 @@ public class RabbitmqConfig {
     //把交换机，队列，通过路由关键字进行绑定，写在RabbitConfig类当中
 
     /**
+     * 死信交换机
+     * @return
+     */
+    @Bean
+    public DirectExchange deadLetterExchange(){
+        return new DirectExchange(RabbitMqConstants.DEAD_LETTER_EXCHANGE);
+    }
+
+    /**
      * 针对消费者配置
      * 1. 设置交换机类型
      * 2. 将队列绑定到交换机
@@ -87,12 +99,20 @@ public class RabbitmqConfig {
      */
     @Bean
     public Queue queueA() {
-        return new Queue(RabbitMqConstants.QUEUE_A, true); //队列持久
+        Map<String, Object> args = new HashMap<>();
+        // 当前队列绑定到死信交换机
+        args.put("x-dead-letter-exchange", RabbitMqConstants.DEAD_LETTER_EXCHANGE);
+        // 当前队列的死信路由
+        args.put("x-dead-letter-routing-key", RabbitMqConstants.DEAD_LETTER_ROUTINGKEY);
+        // 当前队列的消费失败时间
+        args.put("x-message-ttl", 10000);
+        return QueueBuilder.durable(RabbitMqConstants.QUEUE_A).withArguments(args).build();
+
     }
 
     @Bean
-    public Queue queueAFail() {
-        return new Queue(RabbitMqConstants.QUEUE_A_FAIL, true);//队列持久
+    public Queue queueADead() {
+        return new Queue(RabbitMqConstants.QUEUE_A_DEAD, true);//队列持久
     }
 
     //将队列和交换机绑定, 并设置用于匹配键：spring-boot-routingKey_A
@@ -101,9 +121,10 @@ public class RabbitmqConfig {
         return BindingBuilder.bind(queueA()).to(testDirectExchange()).with(RabbitMqConstants.ROUTINGKEY_A);
     }
 
+    //死信队列A，绑定死信交换机
     @Bean
-    public Binding bindingAFail() {
-        return BindingBuilder.bind(queueAFail()).to(testDirectExchange()).with(RabbitMqConstants.ROUTINGKEY_A_FAIL);
+    public Binding bindingADead() {
+        return BindingBuilder.bind(queueADead()).to(deadLetterExchange()).with(RabbitMqConstants.DEAD_LETTER_ROUTINGKEY);
     }
 
     /**
