@@ -44,7 +44,7 @@ public class ConsumerService {
     public void consumer2(@Payload String message, Channel channel, @Headers Map<String, Object> headers) throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
-            int a=1/0;
+            int a = 1 / 0;
             List<Messages> messageList = objectMapper.readValue(message, new TypeReference<List<Messages>>() {
             });
             for (Messages m : messageList) {
@@ -63,20 +63,20 @@ public class ConsumerService {
             }
             throw new Exception("消息消费失败");
         }
-
-
     }
 
 //    /**
 //     * 死信队列消费者
+//     *
 //     * @param message
 //     * @param channel
 //     * @throws Exception
 //     */
 //    @RabbitListener(queues = RabbitMqConstants.QUEUE_A_DEAD)
 //    @RabbitHandler
-//    public void deadConsumerA(String message, Channel channel) throws Exception {
+//    public void deadConsumerA(@Payload String message, Channel channel, @Headers Map<String,Object> headers) throws Exception {
 //        log.info("队列A的死信信息：" + message);
+//        channel.basicAck((Long) headers.get(DELIVERY_TAG),false);
 //    }
 }
 
