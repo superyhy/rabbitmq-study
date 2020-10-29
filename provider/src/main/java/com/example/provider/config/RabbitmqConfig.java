@@ -87,6 +87,8 @@ public class RabbitmqConfig {
         return new DirectExchange(RabbitMqConstants.EXCHANGE_A);
     }
 
+
+
     /**
      * 获取队列A
      * durable:是否持久化,默认是false,持久化队列：会被存储在磁盘上，当消息代理重启时仍然存在，暂存队列：当前连接有效

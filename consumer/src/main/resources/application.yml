@@ -7,5 +7,15 @@ spring:
     host: 127.0.0.1
     username: guest
     password: guest
-    publisher-confirms: true
     virtual-host: /
+    listener:
+      simple:
+        retry:
+          max-attempts: 2   #设置最大重试次数
+          enabled: true
+          initial-interval: 4000   #重试间隔时间
+          max-interval: 8000
+        acknowledge-mode: manual  #采用手动应答
+        default-requeue-rejected: false    #重试次数超过上面的设置之后是否丢弃（false不丢弃时需要写相应代码将该消息加入死信队列）
+      direct:
+        acknowledge-mode: manual

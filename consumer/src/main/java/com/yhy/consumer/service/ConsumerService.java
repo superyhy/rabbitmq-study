@@ -13,7 +13,6 @@ import org.springframework.messaging.handler.annotation.Headers;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -42,9 +41,10 @@ public class ConsumerService {
 
     @RabbitListener(queues = RabbitMqConstants.QUEUE_A)
     @RabbitHandler
-    public void consumer2(@Payload String message, Channel channel, @Headers Map<String, Object> headers) throws IOException {
+    public void consumer2(@Payload String message, Channel channel, @Headers Map<String, Object> headers) throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
+            int a=1/0;
             List<Messages> messageList = objectMapper.readValue(message, new TypeReference<List<Messages>>() {
             });
             for (Messages m : messageList) {
@@ -54,26 +54,29 @@ public class ConsumerService {
             channel.basicAck((Long) headers.get(DELIVERY_TAG), false);
         } catch (Exception e) {
 
-            System.out.println("消息即将再次返回队列处理！");
+            log.info("消费失败，消息返回队列处理！");
             // requeue为是否重新回到队列，true重新入队
-            channel.basicNack((Long) headers.get(DELIVERY_TAG), false, true);
-            e.printStackTrace();
+            try {
+                channel.basicNack((Long) headers.get(DELIVERY_TAG), false, true);
+            } catch (Exception ex) {
+                log.error("消息回退失败");
+            }
+            throw new Exception("消息消费失败");
         }
 
 
     }
 
-    /**
-     * 死信队列消费者
-     * @param message
-     * @param channel
-     * @throws Exception
-     */
-    @RabbitListener(queues = RabbitMqConstants.QUEUE_A_DEAD)
-    @RabbitHandler
-    public void deadConsumerA(String message, Channel channel) throws Exception {
-
-        log.info("队列A的死信信息：" + message);
-    }
+//    /**
+//     * 死信队列消费者
+//     * @param message
+//     * @param channel
+//     * @throws Exception
+//     */
+//    @RabbitListener(queues = RabbitMqConstants.QUEUE_A_DEAD)
+//    @RabbitHandler
+//    public void deadConsumerA(String message, Channel channel) throws Exception {
+//        log.info("队列A的死信信息：" + message);
+//    }
 }
 
